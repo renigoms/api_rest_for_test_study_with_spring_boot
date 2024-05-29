@@ -2,6 +2,7 @@ package br.com.renigomes.api.config;
 
 import br.com.renigomes.api.domain.User;
 import br.com.renigomes.api.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +13,9 @@ import java.util.List;
 
 @Configuration
 @Profile("local")
+@AllArgsConstructor
 public class TestConfig {
-
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public CommandLineRunner startBD(){
