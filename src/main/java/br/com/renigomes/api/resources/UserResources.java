@@ -1,5 +1,8 @@
-package br.com.renigomes.api.domain.resources;
+package br.com.renigomes.api.resources;
 
+import br.com.renigomes.api.Service.impl.UserService;
+import br.com.renigomes.api.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +13,12 @@ import br.com.renigomes.api.domain.User;
 
 @RestController
 @RequestMapping("/user")
+@AllArgsConstructor
 public class UserResources {
+
+    private final UserService userService;
     @GetMapping("/{id}")
     public ResponseEntity<User> findByID(@PathVariable Integer id){
-        return ResponseEntity.ok(new User(id, "Renan N Gomes", "renan.nic@hotmail.com","sounan123"));
+        return ResponseEntity.ok(userService.findByID(id));
     }
 }
