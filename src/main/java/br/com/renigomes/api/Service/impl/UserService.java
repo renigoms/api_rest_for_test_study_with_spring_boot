@@ -6,7 +6,9 @@ import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.User;
 import br.com.renigomes.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,8 @@ import java.util.Optional;
 public class UserService implements UserServiceI {
 
     private final UserRepository userRepository;
+
+    private final ModelMapper modelMapper;
     @Override
     public User findByID(Integer id) {
         Optional<User> userFind = userRepository.findById(id);
@@ -25,5 +29,11 @@ public class UserService implements UserServiceI {
     @Override
     public List<User> findAll(){
         return userRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public User create(UserDTO userDTO) {
+        return userRepository.save(modelMapper.map(userDTO, User.class));
     }
 }
