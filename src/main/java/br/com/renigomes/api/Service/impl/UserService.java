@@ -1,6 +1,7 @@
 package br.com.renigomes.api.Service.impl;
 
 import br.com.renigomes.api.Service.UserServiceI;
+import br.com.renigomes.api.Service.exceptions.DataInterativeViolationException;
 import br.com.renigomes.api.Service.exceptions.ObjectNotFoundException;
 import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.User;
@@ -34,6 +35,13 @@ public class UserService implements UserServiceI {
     @Override
     @Transactional
     public User create(UserDTO userDTO) {
+        findByEmail(userDTO);
         return userRepository.save(modelMapper.map(userDTO, User.class));
+    }
+
+    private void findByEmail(UserDTO userDTO){
+        Optional<User> user = userRepository.findByEmail(userDTO.getEmail());
+        if (user.isPresent())
+            throw new DataInterativeViolationException("E-mail já cadastrado no sistema !");
     }
 }
