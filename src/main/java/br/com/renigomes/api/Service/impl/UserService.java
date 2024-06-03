@@ -39,9 +39,16 @@ public class UserService implements UserServiceI {
         return userRepository.save(modelMapper.map(userDTO, Users.class));
     }
 
+    @Transactional
+    @Override
+    public Users update(UserDTO userDTO) {
+        findByEmail(userDTO);
+        return userRepository.save(modelMapper.map(userDTO, Users.class));
+    }
+
     private void findByEmail(UserDTO userDTO){
         Optional<Users> user = userRepository.findByEmail(userDTO.getEmail());
-        if (user.isPresent())
+        if (user.isPresent() && !user.get().getId().equals(userDTO.getId()))
             throw new DataInterativeViolationException("E-mail já cadastrado no sistema !");
     }
 }
