@@ -4,7 +4,7 @@ import br.com.renigomes.api.Service.UserServiceI;
 import br.com.renigomes.api.Service.exceptions.DataInterativeViolationException;
 import br.com.renigomes.api.Service.exceptions.ObjectNotFoundException;
 import br.com.renigomes.api.domain.DTO.UserDTO;
-import br.com.renigomes.api.domain.User;
+import br.com.renigomes.api.domain.Users;
 import br.com.renigomes.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,25 +22,25 @@ public class UserService implements UserServiceI {
 
     private final ModelMapper modelMapper;
     @Override
-    public User findByID(Integer id) {
-        Optional<User> userFind = userRepository.findById(id);
-        return userFind.orElseThrow(() -> new ObjectNotFoundException("User not found!"));
+    public Users findByID(Integer id) {
+        Optional<Users> userFind = userRepository.findById(id);
+        return userFind.orElseThrow(() -> new ObjectNotFoundException("Users not found!"));
     }
 
     @Override
-    public List<User> findAll(){
+    public List<Users> findAll(){
         return userRepository.findAll();
     }
 
     @Override
     @Transactional
-    public User create(UserDTO userDTO) {
+    public Users create(UserDTO userDTO) {
         findByEmail(userDTO);
-        return userRepository.save(modelMapper.map(userDTO, User.class));
+        return userRepository.save(modelMapper.map(userDTO, Users.class));
     }
 
     private void findByEmail(UserDTO userDTO){
-        Optional<User> user = userRepository.findByEmail(userDTO.getEmail());
+        Optional<Users> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent())
             throw new DataInterativeViolationException("E-mail já cadastrado no sistema !");
     }

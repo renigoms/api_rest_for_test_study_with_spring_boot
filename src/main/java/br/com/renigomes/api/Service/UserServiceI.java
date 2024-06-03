@@ -1,14 +1,14 @@
 package br.com.renigomes.api.Service;
 
 import br.com.renigomes.api.domain.DTO.UserDTO;
-import br.com.renigomes.api.domain.User;
+import br.com.renigomes.api.domain.Users;
 
 import java.util.List;
 
 public interface UserServiceI {
-     User findByID(Integer id);
+     Users findByID(Integer id);
 
-     List<User> findAll();
+     List<Users> findAll();
 
-     User create(UserDTO userDTO);
+     Users create(UserDTO userDTO);
 }
