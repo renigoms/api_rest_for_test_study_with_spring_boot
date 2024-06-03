@@ -18,7 +18,6 @@ public class LocalConfig {
 
     @Bean
     public CommandLineRunner startBD(){
-        System.out.println("ta passando" );
         Users users = new Users(null, "Renan N Gomes",
                 "renan.nic@hotmail.com", "12345");
 

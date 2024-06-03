@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserResources {
 
+    public static final String ID = "/{id}";
     private final UserService userService;
     private final ModelMapper modelMapper;
 
@@ -50,7 +51,7 @@ public class UserResources {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = ID)
     public ResponseEntity<UserDTO> update(@PathVariable Integer id,
                                           @RequestBody UserDTO userDTO){
         userDTO.setId(id);
@@ -59,5 +60,11 @@ public class UserResources {
                         userService.update(userDTO), UserDTO.class
                 )
         );
+    }
+
+    @DeleteMapping(value = ID)
+    public ResponseEntity<UserDTO> delete(@PathVariable Integer id){
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
