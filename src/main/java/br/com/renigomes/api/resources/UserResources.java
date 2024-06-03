@@ -2,10 +2,9 @@ package br.com.renigomes.api.resources;
 
 import br.com.renigomes.api.Service.impl.UserService;
 import br.com.renigomes.api.domain.DTO.UserDTO;
-import br.com.renigomes.api.domain.User;
+import br.com.renigomes.api.domain.Users;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +50,7 @@ public class UserResources {
 
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO obj){
-        User newObj = userService.create(obj);
+        Users newObj = userService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
