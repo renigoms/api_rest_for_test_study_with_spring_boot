@@ -8,6 +8,7 @@ import br.com.renigomes.api.domain.Users;
 import br.com.renigomes.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class UserService implements UserServiceI {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private  UserRepository userRepository;
 
-    private final ModelMapper modelMapper;
+    @Autowired
+    private  ModelMapper modelMapper;
     @Override
     public Users findByID(Integer id) {
         Optional<Users> userFind = userRepository.findById(id);
