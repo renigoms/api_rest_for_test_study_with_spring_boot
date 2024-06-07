@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-//@AllArgsConstructor
 public class UserService implements UserServiceI {
 
     @Autowired
