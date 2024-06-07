@@ -1,5 +1,6 @@
 package br.com.renigomes.api.Service.impl;
 
+import br.com.renigomes.api.Service.exceptions.DataInterativeViolationException;
 import br.com.renigomes.api.Service.exceptions.ObjectNotFoundException;
 import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.Users;
@@ -17,9 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -87,7 +87,28 @@ class UserServiceTest {
     }
 
     @Test
-    void create() {
+    void whenCreaterThenReturnSucess() {
+        when(userRepository.save(any())).thenReturn(users);
+        Users response = userService.create(userDTO);
+        assertNotNull(response);
+        assertEquals(Users.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+
+    }
+
+    @Test
+    void whenCreaterThenReturnAnDataViolationException() {
+        when(userRepository.findByEmail(anyString())).thenReturn(usersOptional);
+        assertTrue(usersOptional.isPresent());
+        usersOptional.get().setId(2);
+        DataInterativeViolationException thrown = assertThrows(
+                DataInterativeViolationException.class,
+                () -> userService.create(userDTO)
+        );
+        assertEquals("E-mail já cadastrado no sistema !", thrown.getMessage());
     }
 
     @Test
