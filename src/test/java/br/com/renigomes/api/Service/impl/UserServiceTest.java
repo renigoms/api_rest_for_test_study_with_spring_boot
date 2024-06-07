@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -31,6 +32,7 @@ class UserServiceTest {
     public static final String EMAIL = "renan.nic@hotmail.com";
     public static final String PASSWORD = "12345";
     public static final String USERS_NOT_FOUND = "Users not found!";
+    public static final int INDEX = 0;
 
     @InjectMocks
     private  UserService userService;
@@ -67,15 +69,21 @@ class UserServiceTest {
     void whenFindByIdThenReturnAnObjectNotFoundException(){
         when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException(USERS_NOT_FOUND));
         ObjectNotFoundException thrown = assertThrows(
-                ObjectNotFoundException.class,
-                () -> userService.findByID(anyInt())
-        );
+                ObjectNotFoundException.class, () -> userService.findByID(anyInt()));
         assertEquals(USERS_NOT_FOUND, thrown.getMessage());
-
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAnListOfUsers() {
+        when(userRepository.findAll()).thenReturn(List.of(users));
+        List<Users> response = userService.findAll();
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(Users.class, response.get(INDEX).getClass());
+        assertEquals(ID, response.get(INDEX).getId());
+        assertEquals(NAME, response.get(INDEX).getName());
+        assertEquals(EMAIL, response.get(INDEX).getEmail());
+        assertEquals(PASSWORD, response.get(INDEX).getPassword());
     }
 
     @Test
