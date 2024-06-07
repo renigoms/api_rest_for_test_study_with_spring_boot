@@ -1,26 +1,23 @@
 package br.com.renigomes.api.Service.impl;
 
+import br.com.renigomes.api.Service.exceptions.ObjectNotFoundException;
 import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.Users;
 import br.com.renigomes.api.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +30,7 @@ class UserServiceTest {
     public static final String NAME = "Renan Nicolau Gomes";
     public static final String EMAIL = "renan.nic@hotmail.com";
     public static final String PASSWORD = "12345";
+    public static final String USERS_NOT_FOUND = "Users not found!";
 
     @InjectMocks
     private  UserService userService;
@@ -49,7 +47,6 @@ class UserServiceTest {
     private UserDTO userDTO;
     private Optional<Users> usersOptional;
 
-
     @BeforeEach
     void setUp() {
         startUsers();
@@ -64,6 +61,17 @@ class UserServiceTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException(){
+        when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException(USERS_NOT_FOUND));
+        ObjectNotFoundException thrown = assertThrows(
+                ObjectNotFoundException.class,
+                () -> userService.findByID(anyInt())
+        );
+        assertEquals(USERS_NOT_FOUND, thrown.getMessage());
+
     }
 
     @Test
