@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
@@ -33,6 +33,7 @@ class UserServiceTest {
     public static final String PASSWORD = "12345";
     public static final String USERS_NOT_FOUND = "Users not found!";
     public static final int INDEX = 0;
+    public static final String E_MAIL_JA_CADASTRADO_NO_SISTEMA = "E-mail já cadastrado no sistema !";
 
     @InjectMocks
     private  UserService userService;
@@ -108,15 +109,49 @@ class UserServiceTest {
                 DataInterativeViolationException.class,
                 () -> userService.create(userDTO)
         );
-        assertEquals("E-mail já cadastrado no sistema !", thrown.getMessage());
+        assertEquals(E_MAIL_JA_CADASTRADO_NO_SISTEMA, thrown.getMessage());
     }
 
     @Test
-    void update() {
+    void whenUpdateThenReturnSucess() {
+        when(userRepository.save(any())).thenReturn(users);
+        Users response = userService.update(userDTO);
+        assertNotNull(response);
+        assertEquals(Users.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     @Test
-    void delete() {
+    void whenUpdateThenReturnAnDataViolationException() {
+        when(userRepository.findByEmail(anyString())).thenReturn(usersOptional);
+        assertTrue(usersOptional.isPresent());
+        usersOptional.get().setId(2);
+        DataInterativeViolationException thrown = assertThrows(
+                DataInterativeViolationException.class,
+                () -> userService.create(userDTO)
+        );
+        assertEquals(E_MAIL_JA_CADASTRADO_NO_SISTEMA, thrown.getMessage());
+    }
+
+    @Test
+    void deleteWithSucess() {
+        when(userRepository.findById(anyInt())).thenReturn(usersOptional);
+        doNothing().when(userRepository).deleteById(anyInt());
+        userService.delete(ID);
+        verify(userRepository, times(1)).deleteById(anyInt());
+    }
+
+    @Test
+    void deleteWithObjectNotFoundException(){
+        when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException(USERS_NOT_FOUND));
+        ObjectNotFoundException thrown = assertThrows(
+                ObjectNotFoundException.class,
+                () -> userService.delete(ID)
+        );
+        assertEquals(USERS_NOT_FOUND, thrown.getMessage());
     }
 
     private void startUsers(){
