@@ -5,6 +5,7 @@ import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.Users;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +17,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@AllArgsConstructor
+
 public class UserResources {
 
     public static final String ID = "/{id}";
-    private final UserService userService;
-    private final ModelMapper modelMapper;
+
+    @Autowired
+    private  UserService userService;
+    @Autowired
+    private  ModelMapper modelMapper;
 
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findByID(@PathVariable Integer id){
-//        return ResponseEntity.ok(userService.findByID(id));
         return ResponseEntity.ok(
                modelMapper
                        .map(
