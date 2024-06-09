@@ -27,8 +27,8 @@ public class ResoucesExceptionHandler {
     }
 
     @ExceptionHandler(DataInterativeViolationException.class)
-    public ResponseEntity<StandardErrorExeption> dataInterativeViolationException(DataInterativeViolationException e,
-                                                                HttpServletRequest request){
+    public ResponseEntity<StandardErrorExeption> dataIntegrityveViolationException(DataInterativeViolationException e,
+                                                                                   HttpServletRequest request){
         StandardErrorExeption error = new StandardErrorExeption(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
