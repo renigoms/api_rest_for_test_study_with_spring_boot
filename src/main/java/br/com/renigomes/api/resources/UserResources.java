@@ -3,16 +3,15 @@ package br.com.renigomes.api.resources;
 import br.com.renigomes.api.Service.impl.UserService;
 import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.Users;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -42,7 +41,7 @@ public class UserResources {
     @GetMapping
     public ResponseEntity<List<UserDTO>> findAll(){
         return ResponseEntity.ok(userService.findAll().stream().map(
-                                user -> modelMapper.map(user, UserDTO.class)).toList()
+                                user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList())
         );
 
     }
