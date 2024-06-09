@@ -46,6 +46,9 @@ class UserServiceTest {
     private UserDTO userDTO;
     private Optional<Users> usersOptional;
 
+    @Mock
+    private ModelMapper modelMapper;
+
     @BeforeEach
     void setUp() {
         startUsers();
@@ -86,6 +89,7 @@ class UserServiceTest {
     @Test
     void whenCreaterThenReturnSucess() {
         when(userRepository.save(any())).thenReturn(users);
+        when(modelMapper.map(any(), any())).thenReturn(users);
         Users response = userService.create(userDTO);
         assertNotNull(response);
         assertEquals(Users.class, response.getClass());
@@ -111,6 +115,7 @@ class UserServiceTest {
     @Test
     void whenUpdateThenReturnSucess() {
         when(userRepository.save(any())).thenReturn(users);
+        when(modelMapper.map(any(), any())).thenReturn(users);
         Users response = userService.update(userDTO);
         assertNotNull(response);
         assertEquals(Users.class, response.getClass());

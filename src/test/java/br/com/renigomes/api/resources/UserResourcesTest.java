@@ -3,6 +3,7 @@ package br.com.renigomes.api.resources;
 import br.com.renigomes.api.Service.impl.UserService;
 import br.com.renigomes.api.domain.DTO.UserDTO;
 import br.com.renigomes.api.domain.Users;
+import org.h2.engine.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,14 +12,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -64,19 +68,48 @@ class UserResourcesTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAListOfUserDTO() {
+        when(userService.findAll()).thenReturn(List.of(user));
+        when(modelMapper.map(any(), any())).thenReturn(userDTO);
+        ResponseEntity<List<UserDTO>> response = userResources.findAll();
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(ArrayList.class, response.getBody().getClass());
+        assertEquals(UserDTO.class, response.getBody().get(INDEX).getClass());
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnCreated() {
+         when(userService.create(any())).thenReturn(user);
+         ResponseEntity<UserDTO> response = userResources.create(userDTO);
+         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
     }
 
     @Test
-    void update() {
+    void whenUpdateTheReturnSuccess() {
+        when(userService.update(userDTO)).thenReturn(user);
+        when(modelMapper.map(any(), any())).thenReturn(userDTO);
+        ResponseEntity<UserDTO> response = userResources.update(ID, userDTO);
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(UserDTO.class, response.getBody().getClass());
+
+        assertEquals(ID, response.getBody().getId());
+        assertEquals(NAME, response.getBody().getName());
+        assertEquals(EMAIL, response.getBody().getEmail());
     }
 
     @Test
-    void delete() {
+    void whenDeleteThenReturnSuccess() {
+        doNothing().when(userService).delete(anyInt());
+        ResponseEntity<UserDTO> response = userResources.delete(ID);
+        assertNotNull(response);
+        assertEquals(ResponseEntity.class, response.getClass());
+        verify(userService, times(1)).delete(anyInt());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     private void startUsers(){
